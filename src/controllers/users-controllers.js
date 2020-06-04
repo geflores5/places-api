@@ -1,4 +1,3 @@
-const { v4: uuid } = require('uuid')
 const { validationResult } = require('express-validator')
 const User = require('../models/users')
 const HttpError = require('../models/http-error')
@@ -41,7 +40,7 @@ const signUp = async (req, res, next) => {
     const error = new HttpError('Invalid input', 422)
     return next(error)
   }
-  const { name, email, password, places } = req.body
+  const { name, email, password } = req.body
 
   let duplicate
   try {
@@ -57,13 +56,12 @@ const signUp = async (req, res, next) => {
   }
 
   const newUser = new User({
-    id: uuid(),
     name,
     email,
     password,
     image:
       'https://upload.wikimedia.org/wikipedia/commons/e/e4/Elliot_Grieveson.png',
-    places,
+    places: [],
   })
 
   try {
