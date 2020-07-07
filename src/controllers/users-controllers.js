@@ -60,16 +60,20 @@ const login = async (req, res, next) => {
   const { email, password } = req.body
   let user
   try {
-    user = await User.findOne({ email: email, password: password })
+    existingUser = await User.findOne({ email: email, password: password })
   } catch (err) {
     const error = new HttpError('Login unsuccessful', 422)
+    return next(error)
   }
 
-  if (!user) {
+  if (!existingUser) {
     const error = new HttpError('Login unsuccessful', 401)
     return next(error)
   }
-  res.status(200).json({ message: 'Login successful' })
+  res.status(200).json({
+    message: 'Login successful',
+    user: existingUser.toObject({ getters: true }),
+  })
 }
 
 exports.getUsers = getUsers
